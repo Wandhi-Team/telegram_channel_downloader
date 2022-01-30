@@ -23,9 +23,10 @@ max_num = 5  # 同时下载数量
 filter_list = ['你好，欢迎加入 Quantumu', '\n']
 # filter chat id /过滤某些频道不下载
 blacklist = [1388464914, ]
+whitelist = [1359883942, ]
 download_all_chat = False  # 监控所有你加入的频道，收到的新消息如果包含媒体都会下载，默认关闭
 filter_file_name = []  # 过滤文件后缀，可以填jpg、avi、mkv、rar等。
-proxy = ("socks5", '127.0.0.1', 4444) #自行替换代理设置，如果不需要代理，请删除括号内容
+proxy = ("socks5", '127.0.0.1', 4444)  # 自行替换代理设置，如果不需要代理，请删除括号内容
 # ***********************************************************************************#
 
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -230,6 +231,10 @@ async def all_chat_download(update):
         entity = await client.get_entity(chat_id)
         if entity.id in blacklist:
             return
+        if len(whitelist) > 0:
+            if entity.id not in whitelist:
+                return
+
         chat_title = entity.title
         # 如果是一组媒体
         caption = await get_group_caption(message) if (
